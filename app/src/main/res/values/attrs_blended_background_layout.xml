@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="BlendedBackgroundLayout">
+        <attr name="referring_element" format="string" />
+    </declare-styleable>
+</resources>
