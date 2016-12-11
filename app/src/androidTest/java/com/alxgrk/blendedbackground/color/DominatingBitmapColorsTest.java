@@ -42,8 +42,8 @@ public class DominatingBitmapColorsTest {
 
         ColorPair actual = uut.getColors();
 
-        assertEquals(Color.TRANSPARENT, actual.getFirst());
-        assertEquals(Color.TRANSPARENT, actual.getSecond());
+        assertEquals(Color.TRANSPARENT, actual.getUpper());
+        assertEquals(Color.TRANSPARENT, actual.getLower());
     }
 
     @Test
@@ -51,8 +51,8 @@ public class DominatingBitmapColorsTest {
         DominatingBitmapColors uut = new DominatingBitmapColors(usableForPalette());
 
         ColorPair actual = uut.getColors();
-        int first = actual.getFirst();
-        int second = actual.getSecond();
+        int first = actual.getUpper();
+        int second = actual.getLower();
         
         assertNotEquals(Integer.toHexString(first), Color.WHITE, first);
         assertNotEquals(Integer.toHexString(first), Color.GRAY, first);

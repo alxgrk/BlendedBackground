@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BlendedBackground</string>
+
+    <!-- A unique tag to be added to the view, that should define background.
+        (Blended Background use this view a reference for background)-->
+    <string name="bb_ref_tag">BbUTVARFBg</string>
 </resources>

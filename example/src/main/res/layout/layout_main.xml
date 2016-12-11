@@ -27,10 +27,16 @@
                     layout="@layout/layout_image_view" />
 
                 <include android:id="@+id/tab2"
-                    layout="@layout/layout_linear" />
+                    layout="@layout/layout_from_background" />
 
                 <include android:id="@+id/tab3"
-                    layout="@layout/layout_relative" />
+                    layout="@layout/layout_complex_layout" />
+
+                <include android:id="@+id/tab4"
+                    layout="@layout/layout_fixed_colors" />
+
+                <include android:id="@+id/tab5"
+                    layout="@layout/layout_changing" />
 
             </FrameLayout>
         </LinearLayout>

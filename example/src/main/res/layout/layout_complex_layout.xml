@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.alxgrk.blendedbackground.BlendedBackgroundLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_rel"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:contentDescription="@string/description_image"
+            android:layout_centerInParent="true"
+            android:src="@drawable/blue"
+            android:tag="@string/bb_ref_tag" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/iv_rel"
+            android:text="@string/lorem_ipsum"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"/>
+
+        <!-- use the first appearing view containing bb_ref_tag | hence, ignore this one -->
+        <ImageView
+            android:id="@+id/iv_rel_another"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/description_image"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/iv_rel"
+            android:src="@drawable/green"
+            android:tag="@string/bb_ref_tag"/>
+
+    </RelativeLayout>
+
+
+</com.alxgrk.blendedbackground.BlendedBackgroundLayout>

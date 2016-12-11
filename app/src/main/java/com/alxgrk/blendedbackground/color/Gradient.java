@@ -25,6 +25,7 @@ public class Gradient {
 
     public Gradient(View parent, @ColorInt int upper, @ColorInt int lower) {
         this(parent, upper, lower, LinearGradient.class);
+        // TODO support other blending types
     }
 
     /**

@@ -17,7 +17,7 @@ public class ColorPairTest {
         int expected = COLOR_1;
         ColorPair uut = new ColorPair(COLOR_1, COLOR_2);
 
-        int actual = uut.getFirst();
+        int actual = uut.getUpper();
 
         assertEquals(expected, actual);
     }
@@ -27,7 +27,7 @@ public class ColorPairTest {
         int expected = COLOR_2;
         ColorPair uut = new ColorPair(COLOR_1, COLOR_2);
 
-        int actual = uut.getSecond();
+        int actual = uut.getLower();
 
         assertEquals(expected, actual);
     }

@@ -1,5 +1,7 @@
 <resources>
     <declare-styleable name="BlendedBackgroundLayout">
-        <attr name="referring_element" format="string" />
+        <attr name="upper_color" format="color" />
+        <attr name="lower_color" format="color" />
+        <attr name="invert" format="boolean" />
     </declare-styleable>
 </resources>

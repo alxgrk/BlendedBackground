@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">Example</string>
+    <string name="app_name">Example Blended Background</string>
     <string name="description_image">A normal ImageView.</string>
+    <string name="lorem_ipsum">Lorem ipsum and so on..</string>
 </resources>

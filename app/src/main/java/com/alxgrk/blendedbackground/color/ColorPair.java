@@ -10,18 +10,28 @@ import android.support.v4.util.Pair;
 public class ColorPair {
 
     @NonNull
-    private final Pair<Integer, Integer> pair;
+    private Pair<Integer, Integer> pair;
 
-    ColorPair(@ColorInt int first, @ColorInt int second) {
-        pair = Pair.create(first, second);
+    public ColorPair(@ColorInt int upper, @ColorInt int lower) {
+        pair = Pair.create(upper, lower);
     }
 
-    public @ColorInt int getFirst() {
+    public @ColorInt int getUpper() {
         return pair.first;
     }
 
-    public @ColorInt int getSecond() {
+    public @ColorInt int getLower() {
         return pair.second;
+    }
+
+    public void setUpper(@ColorInt int upper) {
+        Integer unchanged = pair.second;
+        pair = Pair.create(upper, unchanged);
+    }
+
+    public void setLower(@ColorInt int lower) {
+        Integer unchanged = pair.first;
+        pair = Pair.create(unchanged, lower);
     }
 
     /**

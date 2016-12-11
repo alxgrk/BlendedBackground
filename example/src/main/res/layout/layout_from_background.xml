@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.alxgrk.blendedbackground.BlendedBackgroundLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    app:invert="true" >
 
-    <ImageView
-        android:id="@+id/iv_solo"
-        android:layout_width="500dp"
-        android:layout_height="500dp"
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_centerInParent="true"
-        android:contentDescription="@string/description_image"
-        android:src="@drawable/green"
-        android:tag="@string/bb_ref_tag"/>
+        android:background="@drawable/multicolor"
+        android:tag="@string/bb_ref_tag" />
 
 
 </com.alxgrk.blendedbackground.BlendedBackgroundLayout>

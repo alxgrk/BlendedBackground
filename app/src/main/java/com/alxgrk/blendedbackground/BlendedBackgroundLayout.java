@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.RelativeLayout;
 import com.alxgrk.blendedbackground.color.ColorPair;
 import com.alxgrk.blendedbackground.color.DominatingBitmapColors;
 import com.alxgrk.blendedbackground.color.Gradient;
+import com.alxgrk.blendedbackground.util.UserDefinedColor;
 
 /**
  * TODO: document your custom view class.
@@ -22,16 +25,30 @@ import com.alxgrk.blendedbackground.color.Gradient;
 public class BlendedBackgroundLayout extends RelativeLayout {
 
     public static final class NoReferenceFoundException extends RuntimeException {
-        public NoReferenceFoundException(String enteredValue) {
-            super("No reference found for '" + enteredValue + "'");
+        NoReferenceFoundException() {
+            super("No reference found. Add view:tag=\"@string/ref_tag\" to your layout xml " +
+                    "or set both app:upper and app:lower.");
         }
     }
 
     private static final String TAG = "BlendedBackgroundLayout";
 
-    private String referencedViewName;
+    /**
+     * The two colors the view will blend.
+     */
+    private ColorPair colors =  new ColorPair(Color.TRANSPARENT, Color.TRANSPARENT);
 
-    private View correspondingView;
+    private String ref_tag;
+
+    private View referencedView;
+
+    // TODO let user edit fields dynamically
+
+    private UserDefinedColor upper;
+
+    private UserDefinedColor lower;
+
+    private boolean invert;
 
     public BlendedBackgroundLayout(Context context) {
         super(context);
@@ -49,15 +66,18 @@ public class BlendedBackgroundLayout extends RelativeLayout {
     }
 
     private void init(AttributeSet attrs, int defStyle) {
-        final TypedArray a = getContext().obtainStyledAttributes(
-                attrs, R.styleable.BlendedBackgroundLayout, defStyle, 0);
+        ref_tag = getResources().getString(R.string.bb_ref_tag);
 
-        referencedViewName = a.getString(R.styleable.BlendedBackgroundLayout_referring_element);
-        if (null == referencedViewName) {
-            throw new NoReferenceFoundException("(nothing entered)");
+        if (null != attrs) {
+            final TypedArray a = getContext().obtainStyledAttributes(
+                    attrs, R.styleable.BlendedBackgroundLayout, defStyle, 0);
+
+            upper = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_upper_color);
+            lower = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_lower_color);
+            invert = a.getBoolean(R.styleable.BlendedBackgroundLayout_invert, false);
+
+            a.recycle();
         }
-
-        a.recycle();
     }
 
     @SuppressLint("DrawAllocation")
@@ -65,37 +85,52 @@ public class BlendedBackgroundLayout extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
-        boolean foundReference = false;
-        ChildViewFinder childViewFinder = new ChildViewFinder(this);
-
-        for (View child : childViewFinder.getAllChildren()) {
-            String childName = getIdName(child);
-
-            if (childName.contains(referencedViewName)) {
-                foundReference = true;
-                calculateBackgroundFor(child);
-            }
-        }
-
-        if(!foundReference) {
-            throw new NoReferenceFoundException(referencedViewName);
+        View taggedView = findViewWithTag(ref_tag);
+        if(null == referencedView || taggedView == referencedView) {
+            referencedView = taggedView;
+            update();
         }
     }
 
-    private String getIdName(View view) {
-        String idName = "";
-        try {
-            idName = getResources().getResourceName(view.getId());
-        } catch (Resources.NotFoundException e) {
-            Log.d(TAG, "Child " + view + " does not have a user defined id; " +
-                    "therefore not took into consideration.");
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+
+        Log.d(TAG, "added " + child);
+        if(ref_tag.equals(child.getTag())) {
+            referencedView = child;
+            update();
         }
-        return idName;
     }
 
-    private void calculateBackgroundFor(View child) {
-        correspondingView = child;
-        Log.d(TAG, "Found " + child + " as corresponding view.");
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+
+        Log.d(TAG, "removed " + child);
+        if(ref_tag.equals(child.getTag())) {
+            referencedView = findViewWithTag(ref_tag);
+            update();
+        }
+    }
+
+    private void update() {
+        if(null == referencedView) {
+            if(!upper.isDefined() || !lower.isDefined())
+                throw new NoReferenceFoundException();
+        } else {
+            colors = calculateBackgroundFor(referencedView, colors);
+        }
+
+        applyUserDefinitions(colors);
+
+        Gradient gradient = new Gradient(this, colors.getUpper(), colors.getLower());
+        this.setBackground(gradient.get());
+        this.invalidate();
+    }
+
+    private ColorPair calculateBackgroundFor(@NonNull View child, @NonNull ColorPair colors) {
+        Log.d(TAG, "Found " + getIdName(child) + " as corresponding view.");
 
         Drawable source;
         if (child instanceof ImageView) {
@@ -103,20 +138,35 @@ public class BlendedBackgroundLayout extends RelativeLayout {
         } else {
             source = child.getBackground();
         }
-        DominatingBitmapColors dominatingBitmapColors = new DominatingBitmapColors(((BitmapDrawable) source).getBitmap());
-        ColorPair colors = dominatingBitmapColors.getColors();
-        Log.d(TAG, "Dominant colors: " + colors);
 
-        // TODO consider user attributes (fixed bottom/top color)
+        if (null != source) {
+            DominatingBitmapColors dominatingBitmapColors = new DominatingBitmapColors(((BitmapDrawable) source).getBitmap());
+            colors = dominatingBitmapColors.getColors();
+            Log.d(TAG, "Dominant colors: " + colors);
+        } else {
+            Log.e(TAG, "Could not retrieve image from specified view. Fallback to transparent background.");
+        }
 
-        Gradient gradient = new Gradient(this, colors.getFirst(), colors.getSecond());
-        this.setBackground(gradient.get());
+        return colors;
     }
 
-    @Override
-    public void onViewAdded(View child) {
-        super.onViewAdded(child);
+    private String getIdName(@NonNull View view) {
+        String idName;
+        try {
+            idName = getResources().getResourceName(view.getId());
+        } catch (Resources.NotFoundException e) {
+            Log.w(TAG, "Child " + view + " does not have a user defined id.");
+            idName = view.toString();
+        }
+        return idName;
+    }
 
-        // TODO recognize when a new view was added, that has the specific attribute to be corresponding view
+    private void applyUserDefinitions(@NonNull ColorPair colors) {
+        if(null != upper.getColor()) {
+            colors.setUpper(upper.getColor());
+        }
+        if(null != lower.getColor()) {
+            colors.setLower(lower.getColor());
+        }
     }
 }
