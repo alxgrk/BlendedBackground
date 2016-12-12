@@ -2,12 +2,15 @@ package com.alxgrk.blendedbackground.color;
 
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v4.util.Pair;
 
 /**
  * This class encapsulates two colors.
  */
 public class ColorPair {
+
+    private static final float RATIO = 0.5f;
 
     @NonNull
     private Pair<Integer, Integer> pair;
@@ -25,13 +28,29 @@ public class ColorPair {
     }
 
     public void setUpper(@ColorInt int upper) {
-        Integer unchanged = pair.second;
+        int unchanged = getLower();
         pair = Pair.create(upper, unchanged);
     }
 
     public void setLower(@ColorInt int lower) {
-        Integer unchanged = pair.first;
+        int unchanged = getUpper();
         pair = Pair.create(unchanged, lower);
+    }
+
+    public void blendUpper(@ColorInt int color) {
+        int avg = ColorUtils.blendARGB(color, getUpper(), RATIO);
+        pair = Pair.create(avg, getLower());
+    }
+
+    public void blendLower(@ColorInt int color) {
+        int avg = ColorUtils.blendARGB(color, getLower(), RATIO);
+        pair = Pair.create(getUpper(), avg);
+    }
+
+    public void invert() {
+        int upper = getUpper();
+        int lower = getLower();
+        pair = Pair.create(lower, upper);
     }
 
     /**

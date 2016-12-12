@@ -12,6 +12,8 @@ import android.graphics.drawable.shapes.PathShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.Shape;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.view.View;
 
 public class Gradient {
@@ -20,8 +22,6 @@ public class Gradient {
     private final int upper;
     private final int lower;
     private final Class<? extends Shader> type;
-
-    private Drawable result;
 
     public Gradient(View parent, @ColorInt int upper, @ColorInt int lower) {
         this(parent, upper, lower, LinearGradient.class);
@@ -40,12 +40,28 @@ public class Gradient {
         this.upper = upper;
         this.lower = lower;
         this.type = type;
+    }
 
-        result = createGradient();
+    public Drawable get() {
+        return createGradient();
     }
 
     private Drawable createGradient() {
-        ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
+        ShapeDrawable.ShaderFactory sf = createShaderFactory();
+
+        return createDrawableFrom(sf);
+    }
+
+    private Drawable createDrawableFrom(ShapeDrawable.ShaderFactory sf) {
+        PaintDrawable p = new PaintDrawable();
+        p.setShape(new RectShape());
+        p.setShaderFactory(sf);
+
+        return p;
+    }
+
+    private ShapeDrawable.ShaderFactory createShaderFactory() {
+        return new ShapeDrawable.ShaderFactory() {
             @Override
             public Shader resize(int width, int height) {
                 return new LinearGradient(0, 0,
@@ -55,15 +71,5 @@ public class Gradient {
                         Shader.TileMode.CLAMP);
             }
         };
-
-        PaintDrawable p = new PaintDrawable();
-        p.setShape(new RectShape());
-        p.setShaderFactory(sf);
-
-        return p;
-    }
-
-    public Drawable get() {
-        return result;
     }
 }

@@ -48,6 +48,10 @@ public class BlendedBackgroundLayout extends RelativeLayout {
 
     private UserDefinedColor lower;
 
+    private boolean upperBlendIn;
+
+    private boolean lowerBlendIn;
+
     private boolean invert;
 
     public BlendedBackgroundLayout(Context context) {
@@ -74,6 +78,8 @@ public class BlendedBackgroundLayout extends RelativeLayout {
 
             upper = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_upper_color);
             lower = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_lower_color);
+            upperBlendIn = a.getBoolean(R.styleable.BlendedBackgroundLayout_upper_blend_in, false);
+            lowerBlendIn = a.getBoolean(R.styleable.BlendedBackgroundLayout_lower_blend_in, false);
             invert = a.getBoolean(R.styleable.BlendedBackgroundLayout_invert, false);
 
             a.recycle();
@@ -162,11 +168,26 @@ public class BlendedBackgroundLayout extends RelativeLayout {
     }
 
     private void applyUserDefinitions(@NonNull ColorPair colors) {
-        if(null != upper.getColor()) {
-            colors.setUpper(upper.getColor());
+        Integer upperColor = upper.getColor();
+        if(null != upperColor) {
+            if(upperBlendIn) {
+                colors.blendUpper(upperColor);
+            } else {
+                colors.setUpper(upperColor);
+            }
         }
-        if(null != lower.getColor()) {
-            colors.setLower(lower.getColor());
+
+        Integer lowerColor = lower.getColor();
+        if(null != lowerColor) {
+            if(lowerBlendIn) {
+                colors.blendLower(lowerColor);
+            } else {
+                colors.setLower(lowerColor);
+            }
+        }
+
+        if(invert) {
+            colors.invert();
         }
     }
 }

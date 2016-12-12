@@ -1,46 +1,56 @@
 package com.alxgrk.blendedbackground.color;
 
-import android.app.Instrumentation;
 import android.content.Context;
+import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.ViewAsserts;
 import android.util.AttributeSet;
+import android.util.Xml;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+
+import com.alxgrk.blendedbackground.R;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
-@SmallTest
 public class GradientTest {
-
-    private static final int VIEW_HEIGHT = 200;
 
     private static final int COLOR_1 = Color.RED;
 
     private static final int COLOR_2 = Color.GRAY;
 
-    private View mockView;
+    private int viewSize;
+
+    private Gradient uut;
 
     @Before
     public void setUp() throws Exception {
         Context context = InstrumentationRegistry.getTargetContext();
-        mockView = new View(context);
+        View testView = LayoutInflater.from(context).inflate(R.layout.test_view_parent, null);
+        viewSize = testView.getWidth();
+
+        uut = new Gradient(testView, COLOR_1, COLOR_2);
     }
 
     @Test
     public void testCreation() throws Exception {
-        Gradient uut = new Gradient(mockView, COLOR_1, COLOR_2);
+        throw new RuntimeException("not working yet, viewSize always 0");
+        /*
+        PaintDrawable actual = (PaintDrawable) uut.get();
 
-        Drawable actual = uut.get();
-
-        // FIXME complete test
+        assertEquals(viewSize, actual.getMinimumWidth());
+        assertEquals(viewSize, actual.getMinimumHeight());
+        assertTrue(actual.getShape() instanceof RectShape); */
     }
 }
