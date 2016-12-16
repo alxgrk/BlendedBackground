@@ -76,6 +76,8 @@ public class BlendedBackgroundLayout extends RelativeLayout {
             final TypedArray a = getContext().obtainStyledAttributes(
                     attrs, R.styleable.BlendedBackgroundLayout, defStyle, 0);
 
+			// TODO use custom attributes to bind to parent, not tag
+
             upper = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_upper_color);
             lower = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_lower_color);
             upperBlendIn = a.getBoolean(R.styleable.BlendedBackgroundLayout_upper_blend_in, false);
