@@ -2,14 +2,18 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
+def currentVersion = '1.0.1'
+def webUrl = 'https://github.com/alxgrk/blendedbackground'
+def gitUrl = 'https://github.com/alxgrk/blendedbackground.git'
+
 group = 'com.github.alxgrk.blendedbackground'
-version = '1.0.0'
+version = currentVersion
 
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -36,6 +40,40 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.10.19'
 }
 
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+
+                name "blendedbackground"
+                description = 'A smooth color transition for the background of your Android App.'
+                url webUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'alxgrk'
+                        name 'Alexander Girke'
+                        email 'alexgirke@web.de'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url webUrl
+                }
+            }
+        }
+    }
+}
+
 task generateSourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier 'sources'
@@ -60,17 +98,21 @@ bintray {
     key = System.getenv('BINTRAY_API_KEY')
     pkg {
         repo = 'blended-background'
-        name = 'com.github.alxgrk.blendedbackground'
+        name = group
+        userOrg = 'alxgrk-ag'
 
         version {
-            name = '1.0.0'
-            desc = 'Initial version'
-            vcsTag = '1.0.0'
+            name = currentVersion
+            desc = 'The next version'
+            vcsTag = currentVersion
+            gpg {
+                sign = true
+            }
         }
 
         licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/alxgrk/blendedbackground.git'
-        websiteUrl = 'https://github.com/alxgrk/blendedbackground'
+        vcsUrl = gitUrl
+        websiteUrl = webUrl
     }
     configurations = ['archives']
 }
