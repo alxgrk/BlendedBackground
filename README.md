@@ -27,27 +27,76 @@ Demo:
 ## How to use
 
 ### Gradle
-To use this library in your own project, simply add the following line to your module `build.gradle`:
+To use this library in your own project, simply add the following line to your dependencies ta module `build.gradle`:
 
 ```
 compile 'com.github.alxgrk.blendedbackground:blendedbackground:1.0.1'
 ```
 
 ### Referencing a View
-To reference a View, simply add `android:tag="@string/ref_tag"` to your View.
+To reference a View, simply add `android:tag="@string/bb_ref_tag"` to your View.
+
+**Example**
+```xml
+<ImageView
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+        android:tag="@string/bb_ref_tag"/>
+```
 
 ### Defining Attributes
-You can use the following attributes to define behaviour:
+To define custom attributes, you have to add `xmlns:app="http://schemas.android.com/apk/res-auto"` to the root view of your layout.
 
-`android:upper_color="<color>"` - sets the upper color to a fixed value
+After doing that, you can use the following attributes to define behaviour:
 
-`android:lower_color="<color>"` - sets the lower color to a fixed value
+#### upper_color
+```
+app:upper_color="<color>"
+```
 
-`android:upper_blend_in="<boolean>"` - set to true, if fixed upper color and dominating color should be blended together; default is false
+Description | Value
+:--- | :---
+sets the upper color to a fixed value | colorInt (e.g. "@android:color/white") 
 
-`android:lower_blend_in="<boolean>"` - set to true, if fixed lower color and dominating color should be blended together; default is false
+---
+#### lower_color
+```
+app:lower_color="<color>"
+```
 
-`android:invert="<boolean>"` - set to true, if upper and lower color should change position; default is false
+Description | Value
+:--- | :---
+sets the lower color to a fixed value | colorInt (e.g. "@android:color/black") 
+
+---
+#### upper_blend_in
+```
+app:upper_blend_in="<boolean>"
+```
+
+Description | Value
+:--- | :---
+set to true, if fixed upper color and dominating color should be blended together; default is false | true or false 
+
+---
+#### lower_blend_in
+```
+app:lower_blend_in="<boolean>"
+```
+
+Description | Value
+:--- | :---
+set to true, if fixed lower color and dominating color should be blended together; default is false | true or false 
+
+---
+#### invert
+```
+app:invert="<boolean>"
+```
+
+Description | Value
+:--- | :---
+set to true, if upper and lower color should change position; default is false | true or false
 
 ## Support
 
