@@ -27,23 +27,27 @@ Demo:
 ## How to use
 
 ### Gradle
-// TODO gradle integration
+To use this library in your own project, simply add the following line to your module `build.gradle`:
+
+```
+compile 'com.github.alxgrk.blendedbackground:blendedbackground:1.0.1'
+```
 
 ### Referencing a View
-To reference a View, simply add `android:tag="@string/ref_tag"` to your View. // TODO replace with custom attribute
+To reference a View, simply add `android:tag="@string/ref_tag"` to your View.
 
 ### Defining Attributes
 You can use the following attributes to define behaviour:
 
-`android:upper_color="\<color\>"` - sets the upper color to a fixed value
+`android:upper_color="<color>"` - sets the upper color to a fixed value
 
-`android:lower_color="\<color\>"` - sets the lower color to a fixed value
+`android:lower_color="<color>"` - sets the lower color to a fixed value
 
-`android:upper_blend_in="\<boolean\>"` - set to true, if fixed upper color and dominating color should be blended together; default is false
+`android:upper_blend_in="<boolean>"` - set to true, if fixed upper color and dominating color should be blended together; default is false
 
-`android:lower_blend_in="\<boolean\>"` - set to true, if fixed lower color and dominating color should be blended together; default is false
+`android:lower_blend_in="<boolean>"` - set to true, if fixed lower color and dominating color should be blended together; default is false
 
-`android:invert="\<boolean\>"` - set to true, if upper and lower color should change position; default is false
+`android:invert="<boolean>"` - set to true, if upper and lower color should change position; default is false
 
 ## Support
 

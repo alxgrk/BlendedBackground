@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -133,7 +134,13 @@ public class BlendedBackgroundLayout extends RelativeLayout {
         applyUserDefinitions(colors);
 
         Gradient gradient = new Gradient(this, colors.getUpper(), colors.getLower());
-        this.setBackground(gradient.get());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            this.setBackground(gradient.get());
+        } else {
+            this.setBackgroundDrawable(gradient.get());
+        }
+
         this.invalidate();
     }
 
