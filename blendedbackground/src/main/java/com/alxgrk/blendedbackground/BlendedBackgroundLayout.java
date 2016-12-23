@@ -55,6 +55,8 @@ public class BlendedBackgroundLayout extends RelativeLayout {
 
     private boolean invert;
 
+    private Gradient.GradientType gradientType;
+
     public BlendedBackgroundLayout(Context context) {
         super(context);
         init(null, 0);
@@ -77,13 +79,14 @@ public class BlendedBackgroundLayout extends RelativeLayout {
             final TypedArray a = getContext().obtainStyledAttributes(
                     attrs, R.styleable.BlendedBackgroundLayout, defStyle, 0);
 
-			// TODO use custom attributes to bind to parent, not tag
-
             upper = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_upper_color);
             lower = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_lower_color);
             upperBlendIn = a.getBoolean(R.styleable.BlendedBackgroundLayout_upper_blend_in, false);
             lowerBlendIn = a.getBoolean(R.styleable.BlendedBackgroundLayout_lower_blend_in, false);
             invert = a.getBoolean(R.styleable.BlendedBackgroundLayout_invert, false);
+
+            int definedType = a.getInt(R.styleable.BlendedBackgroundLayout_gradient_type, 0);
+            gradientType = Gradient.GradientType.from(definedType);
 
             a.recycle();
         }
@@ -133,7 +136,8 @@ public class BlendedBackgroundLayout extends RelativeLayout {
 
         applyUserDefinitions(colors);
 
-        Gradient gradient = new Gradient(this, colors.getUpper(), colors.getLower());
+        Gradient gradient = new Gradient(this, colors.getUpper(), colors.getLower(), gradientType);
+        Log.d(TAG, "type = " + gradientType);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             this.setBackground(gradient.get());

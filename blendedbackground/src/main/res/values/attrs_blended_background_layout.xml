@@ -5,5 +5,9 @@
         <attr name="lower_color" format="color" />
         <attr name="lower_blend_in" format="boolean" />
         <attr name="invert" format="boolean" />
+        <attr name="gradient_type" format="enum">
+            <enum name="linear" value="0" />
+            <enum name="radial" value="1" />
+        </attr>
     </declare-styleable>
 </resources>

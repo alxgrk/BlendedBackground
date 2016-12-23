@@ -40,7 +40,7 @@ public class GradientTest {
         View testView = LayoutInflater.from(context).inflate(R.layout.test_view_parent, null);
         viewSize = testView.getWidth();
 
-        uut = new Gradient(testView, COLOR_1, COLOR_2);
+        uut = new Gradient(testView, COLOR_1, COLOR_2, Gradient.GradientType.LINEAR);
     }
 
     @Test
