@@ -1,27 +1,15 @@
 package com.alxgrk.blendedbackground.color;
 
-import android.content.Context;
-import android.content.res.XmlResourceParser;
+import static org.junit.Assert.*;
+
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PaintDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
-import android.support.test.InstrumentationRegistry;
+import android.graphics.LinearGradient;
+import android.graphics.RadialGradient;
+import android.graphics.Shader;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.AttributeSet;
-import android.util.Xml;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
 
-import com.alxgrk.blendedbackground.R;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class GradientTest {
@@ -30,27 +18,47 @@ public class GradientTest {
 
     private static final int COLOR_2 = Color.GRAY;
 
-    private int viewSize;
+    private static final int VIEW_WIDTH = 400;
 
-    private Gradient uut;
+    private static final int VIEW_HEIGHT = 200;
 
-    @Before
-    public void setUp() throws Exception {
-        Context context = InstrumentationRegistry.getTargetContext();
-        View testView = LayoutInflater.from(context).inflate(R.layout.test_view_parent, null);
-        viewSize = testView.getWidth();
+    private static final int RADIUS_QUADRATIC = 100;
 
-        uut = new Gradient(testView, COLOR_1, COLOR_2, Gradient.GradientType.LINEAR);
+    private static final int RADIUS_RECT = 150;
+
+    @Test
+    public void testLinear() throws Exception {
+        Gradient uut = new Gradient(VIEW_WIDTH, VIEW_HEIGHT, COLOR_1, COLOR_2, Gradient.GradientType.LINEAR);
+
+        Shader shader = uut.getShader();
+
+        assertTrue(shader instanceof LinearGradient);
     }
 
     @Test
-    public void testCreation() throws Exception {
-        throw new RuntimeException("not working yet, viewSize always 0");
-        /*
-        PaintDrawable actual = (PaintDrawable) uut.get();
+    public void testRadial() throws Exception {
+        Gradient uut = new Gradient(VIEW_WIDTH, VIEW_HEIGHT, COLOR_1, COLOR_2, Gradient.GradientType.RADIAL);
 
-        assertEquals(viewSize, actual.getMinimumWidth());
-        assertEquals(viewSize, actual.getMinimumHeight());
-        assertTrue(actual.getShape() instanceof RectShape); */
+        Shader shader = uut.getShader();
+
+        assertTrue(shader instanceof RadialGradient);
+    }
+
+    @Test
+    public void testParentRadius_quadratic() throws Exception {
+        Gradient uut = new Gradient(VIEW_HEIGHT, VIEW_HEIGHT, COLOR_1, COLOR_2, Gradient.GradientType.RADIAL);
+
+        int actualRadius = uut.getParentRadius();
+
+        assertEquals(RADIUS_QUADRATIC, actualRadius);
+    }
+
+    @Test
+    public void testParentRadius_rect() throws Exception {
+        Gradient uut = new Gradient(VIEW_WIDTH, VIEW_HEIGHT, COLOR_1, COLOR_2, Gradient.GradientType.RADIAL);
+
+        int actualRadius = uut.getParentRadius();
+
+        assertEquals(RADIUS_RECT, actualRadius);
     }
 }

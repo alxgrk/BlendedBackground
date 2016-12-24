@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.graphics.Palette;
 
-import java.util.List;
-
 public class DominatingBitmapColors {
 
     private final ColorPair pair;

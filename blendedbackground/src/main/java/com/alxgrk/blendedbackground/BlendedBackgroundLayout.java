@@ -136,7 +136,7 @@ public class BlendedBackgroundLayout extends RelativeLayout {
 
         applyUserDefinitions(colors);
 
-        Gradient gradient = new Gradient(this, colors.getUpper(), colors.getLower(), gradientType);
+        Gradient gradient = new Gradient(getWidth(), getHeight(), colors.getUpper(), colors.getLower(), gradientType);
         Log.d(TAG, "type = " + gradientType);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
