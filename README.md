@@ -1,5 +1,7 @@
 # BlendedBackground
 
+[ ![Download](https://api.bintray.com/packages/alxgrk-ag/blended-background/com.github.alxgrk.blendedbackground/images/download.svg) ](https://bintray.com/alxgrk-ag/blended-background/com.github.alxgrk.blendedbackground/_latestVersion)
+
 Smooth background for your app.
 
 ## Inspiration
@@ -97,6 +99,16 @@ app:invert="<boolean>"
 Description | Value
 :--- | :---
 set to true, if upper and lower color should change position; default is false | true or false
+
+---
+#### gradient_type
+```
+app:gradient_type="linear | radial"
+```
+
+Description | Value
+:--- | :---
+the type of the color gradient | linear or radial
 
 ## Support
 

@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
-def currentVersion = '1.0.1'
+def currentVersion = '1.0.2'
 def webUrl = 'https://github.com/alxgrk/blendedbackground'
 def gitUrl = 'https://github.com/alxgrk/blendedbackground.git'
 
@@ -16,7 +16,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0"
+        versionName currentVersion
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -103,7 +103,7 @@ bintray {
 
         version {
             name = currentVersion
-            desc = 'The next version'
+            desc = 'Now supports radial gradients.'
             vcsTag = currentVersion
             gpg {
                 sign = true
