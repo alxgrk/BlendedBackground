@@ -5,9 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.util.Pair;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * This class encapsulates two colors.
  */
+@EqualsAndHashCode
 public class ColorPair {
 
     private static final float RATIO = 0.5f;
@@ -63,21 +66,5 @@ public class ColorPair {
                 "pair=" + Integer.toHexString(pair.first) +
                 "," + Integer.toHexString(pair.second) +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ColorPair colorPair = (ColorPair) o;
-
-        return pair.equals(colorPair.pair);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return pair.hashCode();
     }
 }

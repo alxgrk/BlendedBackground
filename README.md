@@ -28,14 +28,14 @@ Demo:
 
 ## How to use
 
-### Gradle
+### 1. Gradle
 To use this library in your own project, simply add the following line to your dependencies ta module `build.gradle`:
 
 ```
-compile 'com.github.alxgrk.blendedbackground:blendedbackground:1.0.1'
+compile 'com.github.alxgrk.blendedbackground:blendedbackground:1.+'
 ```
 
-### Referencing a View
+### 2. Referencing a View
 To reference a View, simply add `android:tag="@string/bb_ref_tag"` to your View.
 
 **Example**
@@ -46,7 +46,7 @@ To reference a View, simply add `android:tag="@string/bb_ref_tag"` to your View.
         android:tag="@string/bb_ref_tag"/>
 ```
 
-### Defining Attributes
+### 3. Defining Attributes
 To define custom attributes, you have to add `xmlns:app="http://schemas.android.com/apk/res-auto"` to the root view of your layout.
 
 After doing that, you can use the following attributes to define behaviour:

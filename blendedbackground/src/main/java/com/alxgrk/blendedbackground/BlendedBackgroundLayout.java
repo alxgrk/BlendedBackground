@@ -2,21 +2,14 @@ package com.alxgrk.blendedbackground;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.alxgrk.blendedbackground.color.ColorPair;
-import com.alxgrk.blendedbackground.color.DominatingBitmapColors;
 import com.alxgrk.blendedbackground.color.Gradient;
 import com.alxgrk.blendedbackground.util.UserDefinedColor;
 
@@ -25,37 +18,11 @@ import com.alxgrk.blendedbackground.util.UserDefinedColor;
  */
 public class BlendedBackgroundLayout extends RelativeLayout {
 
-    public static final class NoReferenceFoundException extends RuntimeException {
-        NoReferenceFoundException() {
-            super("No reference found. Add view:tag=\"@string/ref_tag\" to your layout xml " +
-                    "or set both app:upper and app:lower.");
-        }
-    }
-
     private static final String TAG = "BlendedBackgroundLayout";
 
-    /**
-     * The two colors the view will blend.
-     */
-    private ColorPair colors =  new ColorPair(Color.TRANSPARENT, Color.TRANSPARENT);
+    private BlendedBackground blendedBackground;
 
-    private String ref_tag;
-
-    private View referencedView;
-
-    // TODO let user edit fields dynamically
-
-    private UserDefinedColor upper;
-
-    private UserDefinedColor lower;
-
-    private boolean upperBlendIn;
-
-    private boolean lowerBlendIn;
-
-    private boolean invert;
-
-    private Gradient.GradientType gradientType;
+    private String refTag;
 
     public BlendedBackgroundLayout(Context context) {
         super(context);
@@ -73,23 +40,31 @@ public class BlendedBackgroundLayout extends RelativeLayout {
     }
 
     private void init(AttributeSet attrs, int defStyle) {
-        ref_tag = getResources().getString(R.string.bb_ref_tag);
-
         if (null != attrs) {
             final TypedArray a = getContext().obtainStyledAttributes(
                     attrs, R.styleable.BlendedBackgroundLayout, defStyle, 0);
 
-            upper = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_upper_color);
-            lower = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_lower_color);
-            upperBlendIn = a.getBoolean(R.styleable.BlendedBackgroundLayout_upper_blend_in, false);
-            lowerBlendIn = a.getBoolean(R.styleable.BlendedBackgroundLayout_lower_blend_in, false);
-            invert = a.getBoolean(R.styleable.BlendedBackgroundLayout_invert, false);
+            UserDefinedColor upper = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_upper_color);
+            UserDefinedColor lower = new UserDefinedColor(a, R.styleable.BlendedBackgroundLayout_lower_color);
+            boolean upperBlendIn = a.getBoolean(R.styleable.BlendedBackgroundLayout_upper_blend_in, false);
+            boolean lowerBlendIn = a.getBoolean(R.styleable.BlendedBackgroundLayout_lower_blend_in, false);
+            boolean invert = a.getBoolean(R.styleable.BlendedBackgroundLayout_invert, false);
 
             int definedType = a.getInt(R.styleable.BlendedBackgroundLayout_gradient_type, 0);
-            gradientType = Gradient.GradientType.from(definedType);
+            Gradient.GradientType gradientType = Gradient.GradientType.from(definedType);
+
+            blendedBackground = BlendedBackground.builder(getContext(), this)
+                    .upper(upper).lower(lower)
+                    .upperBlendIn(upperBlendIn).lowerBlendIn(lowerBlendIn)
+                    .invert(invert).gradientType(gradientType)
+                    .build();
 
             a.recycle();
+        } else {
+            blendedBackground = BlendedBackground.builder(getContext(), this).build();
         }
+
+        refTag = blendedBackground.getRefTag();
     }
 
     @SuppressLint("DrawAllocation")
@@ -97,10 +72,9 @@ public class BlendedBackgroundLayout extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
-        View taggedView = findViewWithTag(ref_tag);
-        if(null == referencedView || taggedView == referencedView) {
-            referencedView = taggedView;
-            update();
+        View taggedView = findViewWithTag(refTag);
+        if(null == blendedBackground.getReferencedView() || taggedView == blendedBackground.getReferencedView()) {
+            update(taggedView);
         }
     }
 
@@ -109,10 +83,7 @@ public class BlendedBackgroundLayout extends RelativeLayout {
         super.onViewAdded(child);
 
         Log.d(TAG, "added " + child);
-        if(ref_tag.equals(child.getTag())) {
-            referencedView = child;
-            update();
-        }
+        update(child);
     }
 
     @Override
@@ -120,87 +91,20 @@ public class BlendedBackgroundLayout extends RelativeLayout {
         super.onViewRemoved(child);
 
         Log.d(TAG, "removed " + child);
-        if(ref_tag.equals(child.getTag())) {
-            referencedView = findViewWithTag(ref_tag);
-            update();
-        }
+        update(child);
     }
 
-    private void update() {
-        if(null == referencedView) {
-            if(!upper.isDefined() || !lower.isDefined())
-                throw new NoReferenceFoundException();
-        } else {
-            colors = calculateBackgroundFor(referencedView, colors);
-        }
+    private void update(View child) {
+        if(refTag.equals(child.getTag())) {
+            Drawable result = blendedBackground.updateReferencedView(child);
 
-        applyUserDefinitions(colors);
-
-        Gradient gradient = new Gradient(getWidth(), getHeight(), colors.getUpper(), colors.getLower(), gradientType);
-        Log.d(TAG, "type = " + gradientType);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            this.setBackground(gradient.get());
-        } else {
-            this.setBackgroundDrawable(gradient.get());
-        }
-
-        this.invalidate();
-    }
-
-    private ColorPair calculateBackgroundFor(@NonNull View child, @NonNull ColorPair colors) {
-        Log.d(TAG, "Found " + getIdName(child) + " as corresponding view.");
-
-        Drawable source;
-        if (child instanceof ImageView) {
-            source = ((ImageView) child).getDrawable();
-        } else {
-            source = child.getBackground();
-        }
-
-        if (null != source) {
-            DominatingBitmapColors dominatingBitmapColors = new DominatingBitmapColors(((BitmapDrawable) source).getBitmap());
-            colors = dominatingBitmapColors.getColors();
-            Log.d(TAG, "Dominant colors: " + colors);
-        } else {
-            Log.e(TAG, "Could not retrieve image from specified view. Fallback to transparent background.");
-        }
-
-        return colors;
-    }
-
-    private String getIdName(@NonNull View view) {
-        String idName;
-        try {
-            idName = getResources().getResourceName(view.getId());
-        } catch (Resources.NotFoundException e) {
-            Log.w(TAG, "Child " + view + " does not have a user defined id.");
-            idName = view.toString();
-        }
-        return idName;
-    }
-
-    private void applyUserDefinitions(@NonNull ColorPair colors) {
-        Integer upperColor = upper.getColor();
-        if(null != upperColor) {
-            if(upperBlendIn) {
-                colors.blendUpper(upperColor);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                this.setBackground(result);
             } else {
-                colors.setUpper(upperColor);
+                this.setBackgroundDrawable(result);
             }
-        }
 
-        Integer lowerColor = lower.getColor();
-        if(null != lowerColor) {
-            if(lowerBlendIn) {
-                colors.blendLower(lowerColor);
-            } else {
-                colors.setLower(lowerColor);
-            }
-        }
-
-        if(invert) {
-            colors.invert();
+            this.invalidate();
         }
     }
 }
