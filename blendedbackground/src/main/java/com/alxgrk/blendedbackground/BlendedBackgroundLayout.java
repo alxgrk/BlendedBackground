@@ -5,13 +5,17 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.alxgrk.blendedbackground.color.ColorPair;
 import com.alxgrk.blendedbackground.color.Gradient;
 import com.alxgrk.blendedbackground.util.UserDefinedColor;
+
+import lombok.Delegate;
 
 /**
  * TODO: document your custom view class.
@@ -74,7 +78,7 @@ public class BlendedBackgroundLayout extends RelativeLayout {
 
         View taggedView = findViewWithTag(refTag);
         if(null == blendedBackground.getReferencedView() || taggedView == blendedBackground.getReferencedView()) {
-            update(taggedView);
+            updateReference(taggedView);
         }
     }
 
@@ -83,7 +87,7 @@ public class BlendedBackgroundLayout extends RelativeLayout {
         super.onViewAdded(child);
 
         Log.d(TAG, "added " + child);
-        update(child);
+        updateReference(child);
     }
 
     @Override
@@ -91,20 +95,89 @@ public class BlendedBackgroundLayout extends RelativeLayout {
         super.onViewRemoved(child);
 
         Log.d(TAG, "removed " + child);
-        update(child);
+        updateReference(child);
     }
 
-    private void update(View child) {
+    private void updateReference(View child) {
         if(refTag.equals(child.getTag())) {
-            Drawable result = blendedBackground.updateReferencedView(child);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                this.setBackground(result);
-            } else {
-                this.setBackgroundDrawable(result);
-            }
-
-            this.invalidate();
+            blendedBackground.updateReferencedView(child);
+            refresh();
         }
+    }
+    
+    private void refresh() {
+        Drawable result = blendedBackground.get();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            this.setBackground(result);
+        } else {
+            this.setBackgroundDrawable(result);
+        }
+
+        this.invalidate();
+    }
+
+    /** DELEGATION METHODS **/
+
+    public View getReferencedView() {
+        return blendedBackground.getReferencedView();
+    }
+
+    public ColorPair getColors() {
+        return blendedBackground.getColors();
+    }
+    
+    public void setUpper(@ColorInt int color) {
+        blendedBackground.setUpper(color);
+        refresh();
+    }
+
+    public @ColorInt int getUpper() {
+        return blendedBackground.getUpper();
+    }
+
+    public void setLower(@ColorInt int color) {
+        blendedBackground.setLower(color);
+        refresh();
+    }
+
+    public @ColorInt int getLower() {
+        return blendedBackground.getLower();
+    }
+
+    public void invert(boolean invert) {
+        blendedBackground.setInvert(invert);
+        refresh();
+    }
+
+    public boolean isInvert() {
+        return blendedBackground.isInvert();
+    }
+
+    public void blendLower(boolean blendLower) {
+        blendedBackground.setLowerBlendIn(blendLower);
+        refresh();
+    }
+    
+    public boolean isLowerBlended() {
+        return blendedBackground.isLowerBlendIn();
+    }
+
+    public void blendUpper(boolean blendUpper) {
+        blendedBackground.setUpperBlendIn(blendUpper);
+        refresh();
+    }
+
+    public boolean isUpperBlended() {
+        return blendedBackground.isUpperBlendIn();
+    }
+
+    public void setGradientType(Gradient.GradientType type) {
+        blendedBackground.setGradientType(type);
+        refresh();
+    }
+
+    public Gradient.GradientType getGradientType() {
+        return blendedBackground.getGradientType();
     }
 }

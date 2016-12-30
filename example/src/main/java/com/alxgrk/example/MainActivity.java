@@ -72,6 +72,8 @@ public class MainActivity extends Activity {
         // FIXME why does fvbi not work?
         FrameLayout content = host.getTabContentView();
         final BlendedBackgroundLayout bb = (BlendedBackgroundLayout) content.getChildAt(content.getChildCount() - 1);
+        bb.invert(true); // example for dynamic usage
+
         final View target = LayoutInflater.from(this).inflate(R.layout.view, null);
         final ToggleButton btnAddRemove = (ToggleButton) findViewById(R.id.btn_add_remove);
         btnAddRemove.setOnClickListener(new View.OnClickListener() {

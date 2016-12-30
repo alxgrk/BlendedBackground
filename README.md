@@ -35,6 +35,22 @@ To use this library in your own project, simply add the following line to your d
 compile 'com.github.alxgrk.blendedbackground:blendedbackground:1.+'
 ```
 
+### 2. Using the UI-Component
+As `BlendedBackgroundLayout` extends `RelativeLayout`, you can use it as an extra layer wherever you want in your layout.xml:
+
+**Example**
+```xml
+<com.alxgrk.blendedbackground.BlendedBackgroundLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+</com.alxgrk.blendedbackground.BlendedBackgroundLayout>
+```
+
+**NOTE:**
+Do not forget, that you have to add `xmlns:app="http://schemas.android.com/apk/res-auto"` to the root view of your layout!
+
 ### 2. Referencing a View
 To reference a View, simply add `android:tag="@string/bb_ref_tag"` to your View.
 
@@ -47,33 +63,43 @@ To reference a View, simply add `android:tag="@string/bb_ref_tag"` to your View.
 ```
 
 ### 3. Defining Attributes
-To define custom attributes, you have to add `xmlns:app="http://schemas.android.com/apk/res-auto"` to the root view of your layout.
-
-After doing that, you can use the following attributes to define behaviour:
+After you set up your layout, you can use the following attributes to define behaviour (either static or dynamic):
 
 #### upper_color
 ```
 app:upper_color="<color>"
 ```
+OR
+```java
+public void setUpper(@ColorInt int color);
+```
 
 Description | Value
 :--- | :---
-sets the upper color to a fixed value | colorInt (e.g. "@android:color/white") 
+sets the upper color to a fixed value | colorInt (e.g. "@android:color/white" OR `Color.WHITE`)
 
 ---
 #### lower_color
 ```
 app:lower_color="<color>"
 ```
+OR
+```java
+public void setLower(@ColorInt int color);
+```
 
 Description | Value
 :--- | :---
-sets the lower color to a fixed value | colorInt (e.g. "@android:color/black") 
+sets the lower color to a fixed value | colorInt (e.g. "@android:color/black" OR `Color.WHITE`)
 
 ---
 #### upper_blend_in
 ```
 app:upper_blend_in="<boolean>"
+```
+OR
+```java
+public void blendUpper(boolean blendUpper);
 ```
 
 Description | Value
@@ -85,6 +111,10 @@ set to true, if fixed upper color and dominating color should be blended togethe
 ```
 app:lower_blend_in="<boolean>"
 ```
+OR
+```java
+public void blendLower(boolean blendLower);
+```
 
 Description | Value
 :--- | :---
@@ -95,6 +125,10 @@ set to true, if fixed lower color and dominating color should be blended togethe
 ```
 app:invert="<boolean>"
 ```
+OR
+```java
+public void invert(boolean invert);
+```
 
 Description | Value
 :--- | :---
@@ -104,6 +138,10 @@ set to true, if upper and lower color should change position; default is false |
 #### gradient_type
 ```
 app:gradient_type="linear | radial"
+```
+OR
+```java
+public void setGradientType(Gradient.GradientType type);
 ```
 
 Description | Value

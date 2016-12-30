@@ -14,6 +14,11 @@ public class UserDefinedColor {
 
     private final boolean isDefined;
 
+    public UserDefinedColor(@ColorInt int color) {
+        isDefined = true;
+        this.color = color;
+    }
+
     public UserDefinedColor(TypedArray typedArray, @StyleableRes int styleableRes) {
         isDefined = typedArray.hasValue(styleableRes);
         if (isDefined) {
@@ -26,7 +31,7 @@ public class UserDefinedColor {
     }
 
     @Nullable
-    public Integer getColor() {
+    public @ColorInt Integer getColor() {
         return color;
     }
 }

@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -16,8 +17,8 @@ import com.alxgrk.blendedbackground.color.Gradient;
 import com.alxgrk.blendedbackground.util.UserDefinedColor;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.Accessors;
 import lombok.experimental.Builder;
 
 @Builder(builderMethodName = "hiddenBuilder")
@@ -55,28 +56,48 @@ public class BlendedBackground {
 
     /** MODIFIABLE ATTRIBUTES **/
 
-    @Accessors
-    private int width = 0;
-
-    @Accessors
-    private int height = 0;
-
-    @Accessors
     private UserDefinedColor upper;
 
-    @Accessors
+    public @ColorInt int getUpper() {
+        return upper.getColor() == null ? upper.getColor() : Color.TRANSPARENT;
+    }
+
+    public void setUpper(@ColorInt int color) {
+        upper = new UserDefinedColor(color);
+    }
+
     private UserDefinedColor lower;
 
-    @Accessors
+    public @ColorInt int getLower() {
+        return lower.getColor() == null ? lower.getColor() : Color.TRANSPARENT;
+    }
+
+    public void setLower(@ColorInt int color) {
+        lower = new UserDefinedColor(color);
+    }
+
+    @Getter
+    @Setter
+    private int width = 0;
+
+    @Getter
+    @Setter
+    private int height = 0;
+
+    @Getter
+    @Setter
     private boolean upperBlendIn = false;
 
-    @Accessors
+    @Getter
+    @Setter
     private boolean lowerBlendIn = false;
 
-    @Accessors
+    @Getter
+    @Setter
     private boolean invert = false;
 
-    @Accessors
+    @Getter
+    @Setter
     private Gradient.GradientType gradientType = Gradient.GradientType.LINEAR;
 
     public Drawable get() {
