@@ -30,11 +30,25 @@ public class BlendedBackground {
     public static BlendedBackgroundBuilder builder(Context context, View parent) {
         String refTag = context.getResources().getString(R.string.bb_ref_tag);
 
-        int width = parent.getWidth();
-        int height = parent.getHeight();
-
-        return hiddenBuilder().context(context).refTag(refTag).width(width).height(height);
+        return hiddenBuilder().context(context).refTag(refTag).width(parent.getWidth()).height(parent.getHeight());
     }
+
+    /*private static class InternalBuilder extends BlendedBackgroundBuilder {
+
+        private View parent;
+
+        InternalBuilder(View parent) {
+            super();
+            this.parent = parent;
+        }
+
+        @Override
+        public BlendedBackground build() {
+            BlendedBackground builtInstance = super.build();
+            parent.addOnLayoutChangeListener(builtInstance.parentLayoutChangeListener);
+            return builtInstance;
+        }
+    }*/
 
     public static final class NoReferenceFoundException extends RuntimeException {
         NoReferenceFoundException() {
@@ -44,6 +58,14 @@ public class BlendedBackground {
     }
 
     private final Context context;
+
+    /*private final View.OnLayoutChangeListener parentLayoutChangeListener = new View.OnLayoutChangeListener() {
+        @Override
+        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            setHeight(bottom - top);
+            setWidth(right - left);
+        }
+    };*/
 
     @Getter
     private final ColorPair colors =  new ColorPair(Color.TRANSPARENT, Color.TRANSPARENT);
@@ -107,6 +129,7 @@ public class BlendedBackground {
 
     public Drawable updateReferencedView(View newReference) {
         referencedView = newReference;
+
         return update();
     }
 

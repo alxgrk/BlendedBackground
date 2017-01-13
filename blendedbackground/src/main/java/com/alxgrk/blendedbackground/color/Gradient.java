@@ -8,6 +8,7 @@ import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.support.annotation.ColorInt;
+import android.support.annotation.IntRange;
 import android.support.annotation.VisibleForTesting;
 
 /**
@@ -43,9 +44,18 @@ public class Gradient {
     private final int lower;
     private final GradientType type;
 
+    /**
+     * Constructor for a Gradient. <br>
+     * Note that parent sizes MUST be larger than 0. If passing a value less than 0, it will get replaced by 1.
+     * @param parentWidth
+     * @param parentHeight
+     * @param upper
+     * @param lower
+     * @param type
+     */
     public Gradient(int parentWidth, int parentHeight, @ColorInt int upper, @ColorInt int lower, GradientType type) {
-        this.parentWidth = parentWidth;
-        this.parentHeight = parentHeight;
+        this.parentWidth = parentWidth <= 0 ? 1 : parentWidth;
+        this.parentHeight = parentHeight <= 0 ? 1 : parentHeight;
         this.upper = upper;
         this.lower = lower;
         this.type = type;
@@ -99,6 +109,6 @@ public class Gradient {
     protected int getParentRadius() {
         int smallestSide = parentWidth < parentHeight ? parentWidth : parentHeight;
         int midOfWidthHeight = Math.abs(parentWidth - parentHeight) / 2;
-        return (smallestSide + midOfWidthHeight) / 2;
+        return Math.abs((smallestSide + midOfWidthHeight) / 2);
     }
 }
