@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -72,9 +73,9 @@ public class MainActivity extends Activity {
         // FIXME why does fvbi not work?
         FrameLayout content = host.getTabContentView();
         final BlendedBackgroundLayout bb = (BlendedBackgroundLayout) content.getChildAt(content.getChildCount() - 1);
-        bb.invert(true); // example for dynamic usage
 
         final View target = LayoutInflater.from(this).inflate(R.layout.view, null);
+
         final ToggleButton btnAddRemove = (ToggleButton) findViewById(R.id.btn_add_remove);
         btnAddRemove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +84,18 @@ public class MainActivity extends Activity {
                     bb.addView(target);
                 } else {
                     bb.removeView(target);
+                }
+            }
+        });
+
+        final Button btnInvert = (Button) findViewById(R.id.btn_invert);
+        btnInvert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bb.isInvert()) {
+                    bb.invert(false);
+                } else {
+                    bb.invert(true);
                 }
             }
         });
