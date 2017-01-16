@@ -32,7 +32,7 @@ Demo:
 To use this library in your own project, simply add the following line to your dependencies ta module `build.gradle`:
 
 ```
-compile 'com.github.alxgrk.blendedbackground:blendedbackground:1.+'
+compile 'com.github.alxgrk.blendedbackground:blendedbackground:2.+'
 ```
 
 ### 2. Using the UI-Component
@@ -99,7 +99,7 @@ app:upper_blend_in="<boolean>"
 ```
 OR
 ```java
-public void blendUpper(boolean blendUpper);
+public void setUpperBlendIn(boolean upperBlendIn);
 ```
 
 Description | Value
@@ -113,7 +113,7 @@ app:lower_blend_in="<boolean>"
 ```
 OR
 ```java
-public void blendLower(boolean blendLower);
+public void setLowerBlendIn(boolean lowerBlendIn);
 ```
 
 Description | Value
@@ -127,7 +127,7 @@ app:invert="<boolean>"
 ```
 OR
 ```java
-public void invert(boolean invert);
+public void setInvert(boolean invert);
 ```
 
 Description | Value

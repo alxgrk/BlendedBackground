@@ -16,39 +16,22 @@ import com.alxgrk.blendedbackground.color.DominatingBitmapColors;
 import com.alxgrk.blendedbackground.color.Gradient;
 import com.alxgrk.blendedbackground.util.UserDefinedColor;
 
+import java.util.Observable;
+
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
 
 @Builder(builderMethodName = "hiddenBuilder")
 @ToString
-public class BlendedBackground {
+public class BlendedBackground extends Observable {
 
     private static final String TAG = "BlendedBackground";
 
     public static BlendedBackgroundBuilder builder(Context context, View parent) {
         String refTag = context.getResources().getString(R.string.bb_ref_tag);
-
-        return hiddenBuilder().context(context).refTag(refTag).width(parent.getWidth()).height(parent.getHeight());
+        return hiddenBuilder().context(context).refTag(refTag).parentWidth(parent.getWidth()).parentHeight(parent.getHeight());
     }
-
-    /*private static class InternalBuilder extends BlendedBackgroundBuilder {
-
-        private View parent;
-
-        InternalBuilder(View parent) {
-            super();
-            this.parent = parent;
-        }
-
-        @Override
-        public BlendedBackground build() {
-            BlendedBackground builtInstance = super.build();
-            parent.addOnLayoutChangeListener(builtInstance.parentLayoutChangeListener);
-            return builtInstance;
-        }
-    }*/
 
     public static final class NoReferenceFoundException extends RuntimeException {
         NoReferenceFoundException() {
@@ -58,14 +41,6 @@ public class BlendedBackground {
     }
 
     private final Context context;
-
-    /*private final View.OnLayoutChangeListener parentLayoutChangeListener = new View.OnLayoutChangeListener() {
-        @Override
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-            setHeight(bottom - top);
-            setWidth(right - left);
-        }
-    };*/
 
     @Getter
     private final ColorPair colors =  new ColorPair(Color.TRANSPARENT, Color.TRANSPARENT);
@@ -86,6 +61,9 @@ public class BlendedBackground {
 
     public void setUpper(@ColorInt int color) {
         upper = new UserDefinedColor(color);
+        colors.setUpper(color);
+        setChanged();
+        notifyObservers();
     }
 
     private UserDefinedColor lower;
@@ -96,34 +74,68 @@ public class BlendedBackground {
 
     public void setLower(@ColorInt int color) {
         lower = new UserDefinedColor(color);
+        colors.setLower(color);
+        setChanged();
+        notifyObservers();
     }
 
     @Getter
-    @Setter
-    private int width = 0;
+    private int parentWidth = 0;
+
+    public void setParentWidth(int parentWidth) {
+        this.parentWidth = parentWidth;
+        setChanged();
+        notifyObservers();
+    }
 
     @Getter
-    @Setter
-    private int height = 0;
+    private int parentHeight = 0;
+
+    public void setParentHeight(int parentHeight) {
+        this.parentHeight = parentHeight;
+        setChanged();
+        notifyObservers();
+    }
 
     @Getter
-    @Setter
     private boolean upperBlendIn = false;
 
+    public void setUpperBlendIn(boolean upperBlendIn) {
+        this.upperBlendIn = upperBlendIn;
+        setChanged();
+        notifyObservers();
+    }
+
     @Getter
-    @Setter
     private boolean lowerBlendIn = false;
 
+    public void setLowerBlendIn(boolean lowerBlendIn) {
+        this.lowerBlendIn = lowerBlendIn;
+        setChanged();
+        notifyObservers();
+    }
+
     @Getter
-    @Setter
     private boolean invert = false;
 
+    public void setInvert(boolean invert) {
+        this.invert = invert;
+        colors.invert();
+        setChanged();
+        notifyObservers();
+    }
+
     @Getter
-    @Setter
     private Gradient.GradientType gradientType = Gradient.GradientType.LINEAR;
 
+    public void setGradientType(@NonNull Gradient.GradientType gradientType) {
+        this.gradientType = gradientType;
+        setChanged();
+        notifyObservers();
+    }
+
     public Drawable get() {
-        Gradient gradient = new Gradient(width, height, colors.getUpper(), colors.getLower(), gradientType);
+        Gradient gradient = new Gradient(parentWidth, parentHeight, colors.getUpper(), colors.getLower(), gradientType);
         return gradient.get();
     }
 
@@ -132,7 +144,6 @@ public class BlendedBackground {
 
         return update();
     }
-
 
     private Drawable update() {
         if(null == referencedView) {

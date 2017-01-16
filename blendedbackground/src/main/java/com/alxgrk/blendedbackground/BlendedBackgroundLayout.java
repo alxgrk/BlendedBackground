@@ -5,25 +5,27 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.alxgrk.blendedbackground.color.ColorPair;
 import com.alxgrk.blendedbackground.color.Gradient;
 import com.alxgrk.blendedbackground.util.UserDefinedColor;
+
+import java.util.Observable;
+import java.util.Observer;
 
 import lombok.Delegate;
 
 /**
  * TODO: document your custom view class.
  */
-public class BlendedBackgroundLayout extends RelativeLayout {
+public class BlendedBackgroundLayout extends RelativeLayout implements Observer {
 
     private static final String TAG = "BlendedBackgroundLayout";
 
+    @Delegate(excludes = Observable.class)
     private BlendedBackground blendedBackground;
 
     private String refTag;
@@ -68,6 +70,7 @@ public class BlendedBackgroundLayout extends RelativeLayout {
             blendedBackground = BlendedBackground.builder(getContext(), this).build();
         }
 
+        blendedBackground.addObserver(this);
         refTag = blendedBackground.getRefTag();
     }
 
@@ -75,8 +78,8 @@ public class BlendedBackgroundLayout extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        blendedBackground.setHeight(b - t);
-        blendedBackground.setWidth(r - l);
+        blendedBackground.setParentHeight(b - t);
+        blendedBackground.setParentWidth(r - l);
 
         View taggedView = findViewWithTag(refTag);
         if(null == blendedBackground.getReferencedView() || taggedView == blendedBackground.getReferencedView()) {
@@ -97,7 +100,20 @@ public class BlendedBackgroundLayout extends RelativeLayout {
         super.onViewRemoved(child);
 
         Log.d(TAG, "removed " + child);
-        updateReference(child);
+
+        if (child == blendedBackground.getReferencedView()) {
+            View taggedView = findViewWithTag(refTag);
+            if(taggedView != null) {
+                updateReference(taggedView);
+            }
+        }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (blendedBackground == o) {
+            refresh();
+        }
     }
 
     private void updateReference(View child) {
@@ -117,69 +133,5 @@ public class BlendedBackgroundLayout extends RelativeLayout {
         }
 
         this.invalidate();
-    }
-
-    /** DELEGATION METHODS **/
-
-    public View getReferencedView() {
-        return blendedBackground.getReferencedView();
-    }
-
-    public ColorPair getColors() {
-        return blendedBackground.getColors();
-    }
-    
-    public void setUpper(@ColorInt int color) {
-        blendedBackground.setUpper(color);
-        refresh();
-    }
-
-    public @ColorInt int getUpper() {
-        return blendedBackground.getUpper();
-    }
-
-    public void setLower(@ColorInt int color) {
-        blendedBackground.setLower(color);
-        refresh();
-    }
-
-    public @ColorInt int getLower() {
-        return blendedBackground.getLower();
-    }
-
-    public void invert(boolean invert) {
-        blendedBackground.setInvert(invert);
-        refresh();
-    }
-
-    public boolean isInvert() {
-        return blendedBackground.isInvert();
-    }
-
-    public void blendLower(boolean blendLower) {
-        blendedBackground.setLowerBlendIn(blendLower);
-        refresh();
-    }
-    
-    public boolean isLowerBlended() {
-        return blendedBackground.isLowerBlendIn();
-    }
-
-    public void blendUpper(boolean blendUpper) {
-        blendedBackground.setUpperBlendIn(blendUpper);
-        refresh();
-    }
-
-    public boolean isUpperBlended() {
-        return blendedBackground.isUpperBlendIn();
-    }
-
-    public void setGradientType(Gradient.GradientType type) {
-        blendedBackground.setGradientType(type);
-        refresh();
-    }
-
-    public Gradient.GradientType getGradientType() {
-        return blendedBackground.getGradientType();
     }
 }

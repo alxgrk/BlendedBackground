@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.ToggleButton;
 
@@ -93,10 +96,52 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (bb.isInvert()) {
-                    bb.invert(false);
+                    bb.setInvert(false);
                 } else {
-                    bb.invert(true);
+                    bb.setInvert(true);
                 }
+            }
+        });
+
+        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        setUpSpinner(spinner, bb);
+    }
+
+    private void setUpSpinner(Spinner spinner, final BlendedBackgroundLayout bb) {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.colors_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedString = String.valueOf(parent.getItemAtPosition(position));
+                switch (selectedString) {
+                    case "Light Green":
+                        bb.setLower(0xff9cac39);
+                        break;
+                    case "Dark Green":
+                        bb.setLower(0xff4a5a10);
+                        break;
+                    case "Light Blue":
+                        bb.setLower(0xff629cac);
+                        break;
+                    case "Dark Blue":
+                        bb.setLower(0xff003173);
+                        break;
+                    case "Light Red":
+                        bb.setLower(0xffcd2010);
+                        break;
+                    case "Dark Red":
+                        bb.setLower(0xff730800);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // do nothing
             }
         });
     }

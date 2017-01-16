@@ -2,4 +2,13 @@
     <string name="app_name">Example Blended Background</string>
     <string name="description_image">A normal ImageView.</string>
     <string name="lorem_ipsum">Lorem ipsum and so on..</string>
+
+    <string-array name="colors_array">
+        <item>Light Green</item>
+        <item>Dark Green</item>
+        <item>Light Red</item>
+        <item>Dark Red</item>
+        <item>Light Blue</item>
+        <item>Dark Blue</item>
+    </string-array>
 </resources>
