@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
-def currentVersion = '1.0.2'
+def currentVersion = '1.0.0'
 def webUrl = 'https://github.com/alxgrk/blendedbackground'
 def gitUrl = 'https://github.com/alxgrk/blendedbackground.git'
 
@@ -99,13 +99,12 @@ bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_API_KEY')
     pkg {
-        repo = 'blended-background'
+        repo = 'com.github.alxgrk.blendedbackground'
         name = group
-        userOrg = 'alxgrk-ag'
 
         version {
             name = currentVersion
-            desc = 'Now supports radial gradients.'
+            desc = 'Completely replaced package since having problems with JFrog trial policy.'
             vcsTag = currentVersion
             gpg {
                 sign = true

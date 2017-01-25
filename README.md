@@ -32,7 +32,7 @@ Demo:
 To use this library in your own project, simply add the following line to your dependencies ta module `build.gradle`:
 
 ```
-compile 'com.github.alxgrk.blendedbackground:blendedbackground:2.+'
+compile 'com.github.alxgrk.blendedbackground:blendedbackground:1.+'
 ```
 
 ### 2. Using the UI-Component
