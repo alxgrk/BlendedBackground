@@ -1,6 +1,6 @@
 # BlendedBackground
 
-[ ![Download](https://api.bintray.com/packages/alxgrk-ag/blended-background/com.github.alxgrk.blendedbackground/images/download.svg) ](https://bintray.com/alxgrk-ag/blended-background/com.github.alxgrk.blendedbackground/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/alxgrk/com.github.alxgrk.blendedbackground/com.github.alxgrk.blendedbackground/images/download.svg) ](https://bintray.com/alxgrk/com.github.alxgrk.blendedbackground/com.github.alxgrk.blendedbackground/_latestVersion)
 
 Smooth background for your app.
 
